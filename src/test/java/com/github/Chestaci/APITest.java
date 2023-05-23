@@ -30,7 +30,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного создания поста.
      */
-    @Test
+    @Test(priority = 1)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест создания поста")
     @Story("Тест успешного создания поста")
@@ -63,7 +63,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного изменения поста.
      */
-    @Test(dependsOnMethods = {"postCreationTest"})
+    @Test(priority = 2)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест изменения поста")
     @Story("Тест успешного изменения поста")
@@ -102,7 +102,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного создания комментария.
      */
-    @Test(dependsOnMethods = {"postCreationTest"})
+    @Test(priority = 3)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест создания комментария")
     @Story("Тест успешного создания комментария")
@@ -132,7 +132,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного изменения комментария.
      */
-    @Test(dependsOnMethods = {"commentCreationTest", "postCreationTest"})
+    @Test(priority = 4)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест изменения комментария")
     @Story("Тест успешного изменения комментария")
@@ -163,7 +163,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного удаления комментария.
      */
-    @Test(dependsOnMethods = {"commentCreationTest", "postCreationTest"})
+    @Test(priority = 5)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест удаления комментария")
     @Story("Тест успешного удаления комментария")
@@ -178,7 +178,7 @@ public class APITest extends MyTest {
                 .contentType(ContentType.JSON.withCharset("UTF-8"));
 
         //Запрос в БД для проверки удалённого комментария
-        Comment comment = getDBComment(commentID, COMMENT);
+        Comment comment = getDBComment(commentID, COMMENT_UPD);
 
         Assertions.assertThat(comment.getCommentStatus()).isEqualTo(TRASH);
     }
@@ -186,7 +186,7 @@ public class APITest extends MyTest {
     /**
      * Тест успешного удаления поста.
      */
-    @Test(dependsOnMethods = {"postCreationTest"})
+    @Test(priority = 6)
     @Severity(value = SeverityLevel.NORMAL)
     @Feature("Тест удаления поста")
     @Story("Тест успешного удаления поста")
@@ -201,7 +201,7 @@ public class APITest extends MyTest {
                 .contentType(ContentType.JSON.withCharset("UTF-8"));
 
         //Запрос в БД для проверки удалённого поста
-        Post post = getDBPost(postID, TITLE, CONTENT);
+        Post post = getDBPost(postID, TITLE_UPD, CONTENT_UPD);
 
         Assertions.assertThat(post.getPostStatus()).isEqualTo(TRASH);
     }
