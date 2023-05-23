@@ -19,15 +19,16 @@ public class DBOperation {
 
     @Step("Запрос в БД для получения поста с параметрами: id = {id}, postTitle = {postTitle}, postContent = {postContent}")
     public static Post getDBPost(Integer id, String postTitle, String postContent) {
-        Post post = new Post();
-        Title title = new Title();
-        Content content = new Content();
+        Post post = Post.builder().build();
+
         try (SessionManager sessionManager = new SessionManagerJDBC(
                 ConfProperties.getProperty("db.url"),
                 ConfProperties.getProperty("db.username"),
                 ConfProperties.getProperty("db.password"),
                 ConfProperties.getProperty("db.driver"))) {
+
             sessionManager.beginSession();
+
             try (Connection connection = sessionManager.getCurrentSession()) {
                 try (PreparedStatement pst = connection.prepareStatement(SQLQuery.QUERY_GET_POST.QUERY)) {
                     pst.setInt(1, id);
@@ -36,12 +37,12 @@ public class DBOperation {
 
                     try (ResultSet resultSet = pst.executeQuery()) {
                         if (resultSet.next()) {
-                            post.setId(resultSet.getInt("ID"));
-                            title.setRaw(resultSet.getString("post_title"));
-                            post.setTitle(title);
-                            content.setRaw(resultSet.getString("post_content"));
-                            post.setContent(content);
-                            post.setPostStatus(resultSet.getString("post_status"));
+                            post = Post.builder()
+                                    .id(resultSet.getInt("ID"))
+                                    .title(Title.builder().raw(resultSet.getString("post_title")).build())
+                                    .content(Content.builder().raw(resultSet.getString("post_content")).build())
+                                    .postStatus(resultSet.getString("post_status"))
+                                    .build();
                         }
                     }
                 }
@@ -54,14 +55,16 @@ public class DBOperation {
 
     @Step("Запрос в БД для получения комментария с параметрами: id = {id}, commentContent = {commentContent}")
     public static Comment getDBComment(Integer id, String commentContent) {
-        Comment comment = new Comment();
-        Content content = new Content();
+        Comment comment = Comment.builder().build();
+
         try (SessionManager sessionManager = new SessionManagerJDBC(
                 ConfProperties.getProperty("db.url"),
                 ConfProperties.getProperty("db.username"),
                 ConfProperties.getProperty("db.password"),
                 ConfProperties.getProperty("db.driver"))) {
+
             sessionManager.beginSession();
+
             try (Connection connection = sessionManager.getCurrentSession()) {
                 try (PreparedStatement pst = connection.prepareStatement(SQLQuery.QUERY_GET_COMMENT.QUERY)) {
                     pst.setInt(1, id);
@@ -69,10 +72,11 @@ public class DBOperation {
 
                     try (ResultSet resultSet = pst.executeQuery()) {
                         if (resultSet.next()) {
-                            comment.setId(resultSet.getInt("comment_ID"));
-                            content.setRaw(resultSet.getString("comment_content"));
-                            comment.setContent(content);
-                            comment.setCommentStatus(resultSet.getString("comment_approved"));
+                            comment = Comment.builder()
+                                    .id(resultSet.getInt("comment_ID"))
+                                    .content(Content.builder().raw(resultSet.getString("comment_content")).build())
+                                    .commentStatus(resultSet.getString("comment_approved"))
+                                    .build();
                         }
                     }
                 }
