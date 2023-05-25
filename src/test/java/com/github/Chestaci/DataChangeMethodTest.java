@@ -22,7 +22,7 @@ import static com.github.Chestaci.util.TestUtils.auth;
  * Тесты создания, изменения, удаления постов и комментариев.
  */
 @Epic("Тесты создания, изменения, удаления постов и комментариев")
-public class APITest extends MyTest {
+public class DataChangeMethodTest extends MyTest {
 
     private Integer postID;
     private Integer commentID;
@@ -142,7 +142,8 @@ public class APITest extends MyTest {
                 .pathParams("rest_route", PATH_PARAM_COMMENT + commentID)
                 .formParam("post", postID)
                 .formParam("content", COMMENT_UPD)
-                .when().post("?rest_route={rest_route}")
+                .when()
+                .post("?rest_route={rest_route}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
